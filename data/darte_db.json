@@ -1,0 +1,83 @@
+{
+  "users": {
+    "user_3L9IcOsxnuyRnsROXh5bNiUNL29": {
+      "id": "usr_1792859954801_dl9a1y0",
+      "clerkUserId": "user_3L9IcOsxnuyRnsROXh5bNiUNL29",
+      "role": "SELLER",
+      "onboardingCompleted": true,
+      "createdAt": "2026-10-24T16:39:14.801Z",
+      "updatedAt": "2026-10-25T07:38:46.781Z"
+    },
+    "user_3LCh8C25F8EHXHGORFcTyqHOWjA": {
+      "id": "usr_1792963806528_thynaew",
+      "clerkUserId": "user_3LCh8C25F8EHXHGORFcTyqHOWjA",
+      "role": "SUPPLIER",
+      "onboardingCompleted": true,
+      "createdAt": "2026-10-25T21:30:06.371Z",
+      "updatedAt": "2026-10-25T21:30:48.581Z"
+    }
+  },
+  "sellerProfiles": {
+    "usr_1792859954801_dl9a1y0": {
+      "id": "sel_1792913926781_2mvcvnp",
+      "userProfileId": "usr_1792859954801_dl9a1y0",
+      "storeName": "Emmy Gadgets",
+      "storeDescription": "Affordable tech and gadgets delivered across Nigeria.",
+      "storeCategory": "Electronics",
+      "country": "Nigeria 🇳🇬",
+      "state": "Lagos",
+      "city": "Ikeja",
+      "phone": "+234 801 234 5678",
+      "goals": [
+        "Start my first online business",
+        "Sell through social media",
+        "Find products to sell"
+      ],
+      "createdAt": "2026-10-25T07:38:46.781Z",
+      "updatedAt": "2026-10-25T21:57:38.450Z"
+    }
+  },
+  "supplierProfiles": {
+    "usr_1792963806528_thynaew": {
+      "id": "sup_1792963848581_gfauv34",
+      "userProfileId": "usr_1792963806528_thynaew",
+      "businessName": "Horizon Import Ltd",
+      "businessDescription": "Direct importer and distributor of consumer electronics and smart accessories.",
+      "businessCategory": "Electronics",
+      "country": "Nigeria 🇳🇬",
+      "state": "Lagos",
+      "city": "Trade Fair, Ojo",
+      "businessAddress": "Suite 412, Plaza B, Trade Fair Complex",
+      "phone": "+234 802 345 6789",
+      "productsSupplied": [
+        "Smartphones & Gadgets",
+        "Smart Wearables"
+      ],
+      "productCount": "51–100",
+      "salesChannels": [
+        "Physical store",
+        "WhatsApp",
+        "Instagram",
+        "Marketplace",
+        "Website"
+      ],
+      "verified": false,
+      "createdAt": "2026-10-25T21:30:48.581Z",
+      "updatedAt": "2026-10-25T21:30:48.581Z"
+    }
+  },
+  "stores": {
+    "usr_1792859954801_dl9a1y0": {
+      "id": "str_1792913926781_enka8a7",
+      "userProfileId": "usr_1792859954801_dl9a1y0",
+      "name": "Emmy Gadgets",
+      "slug": "emmy-gadgets",
+      "description": "Affordable tech and gadgets delivered across Nigeria.",
+      "category": "Electronics",
+      "currency": "NGN",
+      "isActive": true,
+      "createdAt": "2026-10-25T07:38:46.781Z",
+      "updatedAt": "2026-10-25T21:57:38.450Z"
+    }
+  }
+}

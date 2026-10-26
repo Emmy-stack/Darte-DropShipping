@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id                      String         @id
+  name                    String
+  slug                    String         @unique
+  category                String
+  shortDescription        String
+  description             String         @db.Text
+  images                  String[]
+  supplierName            String
+  supplierRating          Float
+  supplierReviewCount     Int            @default(0)
+  supplierVerified        Boolean        @default(false)
+  supplierFulfillmentDays String
+  supplierLocation        String
+  supplierMinOrderQty     Int            @default(1)
+  supplierDispatchRate    String
+  supplierCost            Int // In Nigerian Naira (integer)
+  suggestedSellingPrice   Int // In Nigerian Naira (integer)
+  stock                   Int            @default(0)
+  inStock                 Boolean        @default(true)
+  tags                    String[]
+  badges                  String[]
+  variants                Json           @default("[]")
+  shippingInfo            Json
+  specifications          Json           @default("[]")
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime       @updatedAt
+  storeProducts           StoreProduct[]
+  orderItems              OrderItem[]
+  supplierId              String?
+
+  @@index([category])
+}
+
+model StoreProduct {
+  id                 String   @id @default(cuid())
+  productId          String
+  sellerId           String // Clerk User ID of authenticated seller
+  customSellingPrice Int // Configured retail selling price in Naira
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  product            Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  // Enforces that the same product cannot be added twice to the same seller's store.
+  // Different sellers can add the same product independently.
+  @@unique([sellerId, productId])
+  @@index([sellerId])
+  @@index([productId])
+}
+
+model StoreProfile {
+  id                          String   @id @default(cuid())
+  sellerId                    String   @unique // Clerk User ID of authenticated seller
+  name                        String
+  slug                        String   @unique // Unique normalized URL identifier
+  description                 String?  @db.Text
+  logoUrl                     String?
+  category                    String?
+  contactEmail                String?
+  contactPhone                String?
+  country                     String   @default("Nigeria")
+  state                       String?
+  city                        String?
+  shippingPolicy              String?  @db.Text
+  returnPolicy                String?  @db.Text
+  orderProcessingInfo         String?  @db.Text
+  customerSupportInstructions String?  @db.Text
+  isPublished                 Boolean  @default(true) // Whether the storefront is publicly accessible
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+  orders                      Order[]
+
+  @@index([sellerId])
+  @@index([slug])
+  @@index([isPublished])
+}
+
+model Order {
+  id                   String        @id @default(cuid())
+  orderNumber          String        @unique
+  sellerId             String        // Clerk User ID of authenticated seller
+  storeId              String?
+  storeSlug            String
+  storeName            String
+  customerName         String
+  customerEmail        String
+  customerPhone        String
+  deliveryAddress      String
+  deliveryCity         String
+  deliveryState        String
+  deliveryInstructions String?       @db.Text
+  subtotal             Int           // Subtotal in Nigerian Naira (integer)
+  shippingAmount       Int           @default(0) // Shipping fee in Naira
+  discountAmount       Int           @default(0) // Discount amount in Naira
+  totalAmount          Int           // Total payable amount in Naira
+  currency             String        @default("NGN")
+  orderStatus          String        @default("PENDING_PAYMENT") // PENDING_PAYMENT, PAID, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+  paymentStatus        String        @default("PENDING") // PENDING, SUCCESS, FAILED, ABANDONED, REFUNDED
+  paymentProvider      String        @default("PAYSTACK")
+  paymentReference     String        @unique
+  paystackAccessCode   String?
+  paidAt               DateTime?
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  items                OrderItem[]
+  store                StoreProfile? @relation(fields: [storeId], references: [id], onDelete: SetNull)
+
+  @@index([sellerId])
+  @@index([orderNumber])
+  @@index([paymentReference])
+  @@index([orderStatus])
+  @@index([paymentStatus])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id                   String    @id @default(cuid())
+  orderId              String
+  productId            String?
+  storeProductId       String?
+  productName          String
+  productImage         String?
+  productSlug          String?
+  category             String?
+  quantity             Int
+  unitPrice            Int       // Selling price snapshot at purchase time (integer Naira)
+  lineTotal            Int       // quantity * unitPrice (integer Naira)
+  supplierCostSnapshot Int?      // Strictly internal wholesale cost snapshot at purchase time
+  supplierName         String?
+  supplierId           String?   // Optional relation hook for future supplier hub integration
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  order                Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product              Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([supplierName])
+}
+

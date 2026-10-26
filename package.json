@@ -1,0 +1,44 @@
+{
+  "name": "darte-dropshipping",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "npx tsx tests/backend_integration.test.ts && npx tsx tests/onboarding_routing.test.ts && npx tsx tests/stage_c_store_management.test.ts && npx tsx tests/stage_c1_logo_upload.test.ts && npx tsx tests/stage_d_storefront.test.ts && npx tsx tests/stage_e_checkout_paystack.test.ts",
+    "test:onboarding": "npx tsx tests/onboarding_routing.test.ts",
+    "test:store": "npx tsx tests/stage_c_store_management.test.ts",
+    "test:logo": "npx tsx tests/stage_c1_logo_upload.test.ts",
+    "test:storefront": "npx tsx tests/stage_d_storefront.test.ts",
+    "test:checkout": "npx tsx tests/stage_e_checkout_paystack.test.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:seed": "npx tsx prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@clerk/nextjs": "^7.9.10",
+    "@prisma/client": "^6.19.3",
+    "@supabase/supabase-js": "^2.118.0",
+    "lucide-react": "^1.16.0",
+    "next": "16.3.8",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.8",
+    "prisma": "^6.19.3",
+    "tailwindcss": "^4",
+    "tsx": "^4.19.3",
+    "typescript": "^5"
+  }
+}

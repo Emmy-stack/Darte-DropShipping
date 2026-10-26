@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+@theme {
+  --color-darte-primary: #16A34A;
+  --color-darte-primary-hover: #15803D;
+  --color-darte-dark: #0B3D2E;
+  --color-darte-dark-surface: #0E4736;
+  --color-darte-dark-border: #165641;
+  --color-darte-light: #DCFCE7;
+  --color-darte-light-border: #BBF7D0;
+  --color-darte-bg: #F8FAF9;
+  --color-darte-text: #111827;
+  --color-darte-muted: #6B7280;
+  --color-darte-border: #E5E7EB;
+  --color-darte-border-subtle: #F3F4F6;
+}
+
+:root {
+  --background: #F8FAF9;
+  --foreground: #111827;
+  --darte-primary: #16A34A;
+  --darte-dark: #0B3D2E;
+  --darte-light: #DCFCE7;
+  --darte-bg: #F8FAF9;
+  --darte-text: #111827;
+  --darte-muted: #6B7280;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #F8FAF9;
+  color: #111827;
+}
+
+body {
+  background-color: #F8FAF9;
+  color: #111827;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F5F3;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Subtle glassmorphism */
+.glass-nav {
+  background: rgba(248, 250, 249, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Micro-animations */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes floatReverse {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+}
+
+@keyframes pulseSubtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: floatReverse 7s ease-in-out infinite;
+}
+
+.animate-pulse-subtle {
+  animation: pulseSubtle 3s ease-in-out infinite;
+}
+
+/* Card hover transitions */
+.hover-card-elevation {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+
+.hover-card-elevation:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px -8px rgba(11, 61, 46, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+}
