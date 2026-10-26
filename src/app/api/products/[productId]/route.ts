@@ -24,7 +24,16 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
       try {
         const dbProduct = await prisma.product.findFirst({
           where: {
-            OR: [{ id: productId }, { slug: productId }],
+            AND: [
+              { OR: [{ id: productId }, { slug: productId }] },
+              { status: "ACTIVE" },
+              {
+                OR: [
+                  { supplierId: null },
+                  { supplier: { verificationStatus: "APPROVED" } },
+                ],
+              },
+            ],
           },
         });
 

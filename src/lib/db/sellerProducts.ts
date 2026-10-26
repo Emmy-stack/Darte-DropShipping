@@ -142,15 +142,30 @@ export async function addProductToSellerStore(
 
   if (isDatabaseConfigured()) {
     try {
-      const dbProd = await prisma.product.findUnique({ where: { id: productId } });
+      const dbProd = await prisma.product.findUnique({
+        where: { id: productId },
+        include: { supplier: true },
+      });
       if (!dbProd) {
         throw new Error("Product not found in catalog");
+      }
+      if (dbProd.status !== "ACTIVE") {
+        throw new Error("This product is currently inactive or in draft mode and cannot be added to your store.");
+      }
+      if (dbProd.supplierId && dbProd.supplier?.verificationStatus !== "APPROVED") {
+        throw new Error("This product's supplier account is pending verification and cannot be added to your store yet.");
       }
       supplierCost = dbProd.supplierCost;
       defaultSuggestedPrice = dbProd.suggestedSellingPrice;
     } catch (dbErr: unknown) {
       const errMsg = dbErr instanceof Error ? dbErr.message : "";
-      if (errMsg === "Product not found in catalog") throw dbErr;
+      if (
+        errMsg === "Product not found in catalog" ||
+        errMsg.includes("inactive or in draft mode") ||
+        errMsg.includes("pending verification")
+      ) {
+        throw dbErr;
+      }
       const mockProd = getProductById(productId);
       if (!mockProd) throw new Error("Product not found in catalog");
       supplierCost = mockProd.supplierCost;

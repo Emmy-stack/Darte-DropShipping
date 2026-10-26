@@ -40,8 +40,12 @@ model Product {
   storeProducts           StoreProduct[]
   orderItems              OrderItem[]
   supplierId              String?
+  status                  String         @default("ACTIVE") // DRAFT, ACTIVE, INACTIVE
+  supplier                SupplierProfile? @relation(fields: [supplierId], references: [id], onDelete: SetNull)
 
   @@index([category])
+  @@index([supplierId])
+  @@index([status])
 }
 
 model StoreProduct {
@@ -139,14 +143,45 @@ model OrderItem {
   lineTotal            Int       // quantity * unitPrice (integer Naira)
   supplierCostSnapshot Int?      // Strictly internal wholesale cost snapshot at purchase time
   supplierName         String?
-  supplierId           String?   // Optional relation hook for future supplier hub integration
+  supplierId           String?   // Supplier reference for fulfillment isolation
+  fulfillmentStatus    String    @default("PENDING") // PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
   order                Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product              Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
+  supplier             SupplierProfile? @relation(fields: [supplierId], references: [id], onDelete: SetNull)
 
   @@index([orderId])
   @@index([productId])
+  @@index([supplierId])
   @@index([supplierName])
+  @@index([fulfillmentStatus])
+}
+
+model SupplierProfile {
+  id                 String      @id @default(cuid())
+  clerkUserId        String      @unique // Clerk User ID of authenticated supplier
+  companyName        String
+  slug               String      @unique // Unique normalized URL identifier
+  description        String?     @db.Text
+  logoUrl            String?
+  businessEmail      String
+  phone              String
+  country            String      @default("Nigeria")
+  state              String
+  city               String
+  address            String?
+  website            String?
+  categoriesSupplied String[]    @default([])
+  verificationStatus String      @default("PENDING") // PENDING, APPROVED, REJECTED, SUSPENDED
+  adminNotes         String?     @db.Text
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  products           Product[]
+  orderItems         OrderItem[]
+
+  @@index([clerkUserId])
+  @@index([slug])
+  @@index([verificationStatus])
 }
 

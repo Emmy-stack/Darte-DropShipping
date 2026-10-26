@@ -114,7 +114,16 @@ export async function getPublicStoreProducts(
     try {
       // Query store products for this seller with minimal, explicit public projection
       const storeProducts = await prisma.storeProduct.findMany({
-        where: { sellerId },
+        where: {
+          sellerId,
+          product: {
+            status: "ACTIVE",
+            OR: [
+              { supplierId: null },
+              { supplier: { verificationStatus: "APPROVED" } },
+            ],
+          },
+        },
         select: {
           id: true,
           productId: true,
@@ -237,9 +246,22 @@ export async function getPublicStoreProduct(
       const storeProduct = await prisma.storeProduct.findFirst({
         where: {
           sellerId,
-          OR: [
-            { productId: productIdOrSlug },
-            { product: { slug: productIdOrSlug } },
+          AND: [
+            {
+              OR: [
+                { productId: productIdOrSlug },
+                { product: { slug: productIdOrSlug } },
+              ],
+            },
+            {
+              product: {
+                status: "ACTIVE",
+                OR: [
+                  { supplierId: null },
+                  { supplier: { verificationStatus: "APPROVED" } },
+                ],
+              },
+            },
           ],
         },
         select: {

@@ -120,7 +120,11 @@ export async function createPendingOrder(
         productId: { in: productIds },
       },
       include: {
-        product: true,
+        product: {
+          include: {
+            supplier: true,
+          },
+        },
       },
     });
 
@@ -160,6 +164,20 @@ export async function createPendingOrder(
         return {
           success: false,
           error: `"${sp.product.name}" is currently sold out. Please remove it from your cart to proceed.`,
+        };
+      }
+
+      if (sp.product.status !== "ACTIVE") {
+        return {
+          success: false,
+          error: `"${sp.product.name}" is no longer available. Please remove it from your cart to proceed.`,
+        };
+      }
+
+      if (sp.product.supplierId && sp.product.supplier?.verificationStatus !== "APPROVED") {
+        return {
+          success: false,
+          error: `"${sp.product.name}" is temporarily unavailable for purchase. Please remove it from your cart to proceed.`,
         };
       }
 
@@ -625,6 +643,22 @@ export async function updateSellerOrderStatus(
 
     if (order.sellerId !== sellerId) {
       return { success: false, error: "Unauthorized: You do not own this order." };
+    }
+
+    if (
+      order.paymentStatus !== "SUCCESS" &&
+      (newStatus === OrderStatus.PROCESSING ||
+        newStatus === OrderStatus.SHIPPED ||
+        newStatus === OrderStatus.DELIVERED)
+    ) {
+      return { success: false, error: "Cannot advance fulfillment on an unpaid order." };
+    }
+
+    if (
+      (order.orderStatus === OrderStatus.CANCELLED || order.paymentStatus === PaymentStatus.REFUNDED) &&
+      newStatus === OrderStatus.DELIVERED
+    ) {
+      return { success: false, error: "Cannot mark a cancelled or refunded order as delivered." };
     }
 
     await prisma.order.update({

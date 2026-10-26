@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function SupplierAliasPage() {
-  redirect("/dashboard/supplier");
+  redirect("/supplier/dashboard");
 }

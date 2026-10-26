@@ -16,19 +16,37 @@ export async function GET(req: NextRequest) {
 
     if (isDatabaseConfigured()) {
       try {
-        const whereClause: Prisma.ProductWhereInput = {};
+        const conditions: Prisma.ProductWhereInput[] = [
+          { status: "ACTIVE" },
+          {
+            OR: [
+              { supplierId: null },
+              {
+                supplier: {
+                  verificationStatus: "APPROVED",
+                },
+              },
+            ],
+          },
+        ];
 
         if (category && category !== "All") {
-          whereClause.category = category;
+          conditions.push({ category });
         }
 
         if (search) {
-          whereClause.OR = [
-            { name: { contains: search, mode: "insensitive" } },
-            { shortDescription: { contains: search, mode: "insensitive" } },
-            { supplierName: { contains: search, mode: "insensitive" } },
-          ];
+          conditions.push({
+            OR: [
+              { name: { contains: search, mode: "insensitive" } },
+              { shortDescription: { contains: search, mode: "insensitive" } },
+              { supplierName: { contains: search, mode: "insensitive" } },
+            ],
+          });
         }
+
+        const whereClause: Prisma.ProductWhereInput = {
+          AND: conditions,
+        };
 
         const dbProducts = await prisma.product.findMany({
           where: whereClause,
